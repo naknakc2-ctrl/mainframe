@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GroupCall — Free Group Video Calls</title>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- LOBBY -->
+<div id="lobby">
+  <div class="lobby-card">
+    <div class="logo">
+      <div class="logo-icon">📹</div>
+      <h1>Group<span>Call</span></h1>
+    </div>
+
+    <video id="preview" class="preview-video" autoplay muted playsinline></video>
+
+    <p class="section-label">Create a new room</p>
+    <div class="input-group">
+      <div>
+        <label>Your name</label>
+        <input id="name-input" type="text" placeholder="Enter your name" maxlength="30" />
+      </div>
+    </div>
+    <div class="lobby-actions">
+      <button class="btn btn-primary" onclick="createRoom()" id="create-btn">
+        <span>📹</span> Create Room
+        <div class="spinner" id="create-spinner"></div>
+      </button>
+    </div>
+
+    <div class="divider">or join existing</div>
+
+    <div class="join-section">
+      <div class="input-group">
+        <div>
+          <label>Room ID</label>
+          <input id="room-input" type="text" placeholder="Paste room ID here" />
+        </div>
+        <div>
+          <label>Your name</label>
+          <input id="join-name-input" type="text" placeholder="Enter your name" maxlength="30" />
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-full" onclick="joinRoom()" id="join-btn">
+        <span>🔗</span> Join Room
+        <div class="spinner" id="join-spinner"></div>
+      </button>
+    </div>
+
+    <div class="error-banner" id="error-banner"></div>
+
+    <div class="note">
+      ⚡ Mesh-based WebRTC — best quality for 2–5 participants. For larger groups, quality may vary depending on bandwidth.
+    </div>
+  </div>
+</div>
+
+<!-- ROOM -->
+<div id="room">
+  <div class="room-main">
+    <div class="room-header">
+      <div class="room-info">
+        <div class="logo logo-mini">
+          <div class="logo-icon">📹</div>
+          <h1>Group<span>Call</span></h1>
+        </div>
+        <div class="room-badge">
+          <div class="dot-live"></div>
+          Live
+        </div>
+      </div>
+
+      <div class="room-id-chip" onclick="copyRoomLink()" title="Click to copy link">
+        <span>🔗</span>
+        <span id="room-id-display">—</span>
+        <span class="hint">copy</span>
+      </div>
+
+      <div class="participant-count" id="participant-count">1 participant</div>
+    </div>
+
+    <div id="video-grid" class="n1"></div>
+
+    <div class="control-bar">
+      <div class="ctrl-btn" id="ctrl-mic">
+        <button class="btn btn-secondary" onclick="toggleMic()" title="Toggle mic">🎙️</button>
+        <span>Mic</span>
+      </div>
+      <div class="ctrl-btn" id="ctrl-cam">
+        <button class="btn btn-secondary" onclick="toggleCam()" title="Toggle camera">📷</button>
+        <span>Camera</span>
+      </div>
+      <div class="ctrl-sep"></div>
+      <div class="ctrl-btn" id="ctrl-screen">
+        <button class="btn btn-secondary" onclick="toggleScreen()" title="Share screen">🖥️</button>
+        <span>Screen</span>
+      </div>
+      <div class="ctrl-btn" id="ctrl-chat">
+        <button class="btn btn-secondary" onclick="toggleChat()" title="Toggle chat">💬</button>
+        <span>Chat</span>
+      </div>
+      <div class="ctrl-sep"></div>
+      <div class="ctrl-btn">
+        <button class="btn btn-secondary" onclick="copyRoomLink()" title="Copy link">🔗</button>
+        <span>Copy Link</span>
+      </div>
+      <div class="ctrl-sep"></div>
+      <div class="ctrl-btn">
+        <button class="btn btn-danger" onclick="endCall()" title="Leave call">📵</button>
+        <span>Leave</span>
+      </div>
+    </div>
+  </div>
+
+  <aside id="chat-panel">
+    <div class="chat-header">
+      <span class="chat-title">💬 Chat</span>
+      <button class="chat-close" onclick="toggleChat()" title="Close chat">✕</button>
+    </div>
+    <div id="chat-messages" class="chat-messages"></div>
+    <form class="chat-input-bar" onsubmit="event.preventDefault(); sendChat();">
+      <input id="chat-input" type="text" placeholder="Type a message..." maxlength="500" autocomplete="off" />
+      <button class="btn btn-primary" type="submit">Send</button>
+    </form>
+  </aside>
+</div>
+
+<div id="toast"></div>
+
+<script src="call.js"></script>
+</body>
+</html>
